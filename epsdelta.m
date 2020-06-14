@@ -1,4 +1,4 @@
-function zero = epsdelta(dim, epsilon, M)
+function zero = epsdelta(d, epsilon_equals_delta, M)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % epsdelta Function for fzero. Solve for iso-draw curve intersection
     %   with 45 degree line (i.e. fix M and d, solve for epsilon = delta
@@ -13,5 +13,8 @@ function zero = epsdelta(dim, epsilon, M)
     % zero - want to be equal to zero
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    zero = ((2*dim)/epsilon) * log((2*dim)/epsilon) - M;
+    
+    draws = optimaldraws(d, epsilon_equals_delta, epsilon_equals_delta);
+    
+    zero = draws - M;
 end

@@ -1,4 +1,4 @@
-function comparison_plot(numerical_IRF, analytical_lower, analytical_upper, collector, response, shock, VAR_config, FLAGcumsum, pic_config)
+function [rel_haus] = comparison_plot(numerical_IRF, analytical_lower, analytical_upper, collector, response, shock, VAR_config, FLAGcumsum, pic_config)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % comparison_plot Function to produce Figures 9 and 10 in appendix B.
@@ -126,6 +126,18 @@ function comparison_plot(numerical_IRF, analytical_lower, analytical_upper, coll
  
     print(gcf, '-depsc2', fullfile(pic_dir, ['differences.eps']))
  
+    
+    % Compute relative Hausdorf
+    rel_haus = zeros(size(drawMatrix, 1), 1);
+    worst_case = analytical_upper - analytical_lower;
+    denominator = max(worst_case(:, response));
+    for ii = 1:size(drawMatrix, 1)
+        % Take the max of the upper distance and the lower distance, then
+        % max over all horizons
+        numerator = max(max(abs(diff_upper(:,response,ii)), abs(diff_lower(:,response,ii))));
+        rel_haus(ii) = numerator / denominator;
+    end
+    
 end
 
 

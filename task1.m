@@ -1,4 +1,4 @@
-function [IRF_in, collector] = task1(VAR_config)
+function [IRF_in, collector, C] = task1(VAR_config)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % task1 - Section 3.1 - Summarizing the identified set in
     % set-identified SVARs
@@ -32,7 +32,7 @@ function [IRF_in, collector] = task1(VAR_config)
     nshocks = size(restrictionCell, 3);
  
     % Precompute IRF coefficients (without orth matrix)
-    [IRF_coef, LR_coef] = IRF_coeff(A, cholsig, nlag, nhorizon, constant);
+    [IRF_coef, LR_coef, C] = IRF_coeff(A, cholsig, nlag, nhorizon, constant);
  
     % Stopping criterion
     flagIndiv = false(size(drawMatrix, 1), 1);
@@ -44,7 +44,7 @@ function [IRF_in, collector] = task1(VAR_config)
     % Maxdraws for preallocation
     maxdraws = max(drawMatrix(:, 1));
  
-    % Preallocate
+    % Preallocate (to size maxdraws)
     IRF_in = zeros(nvar, nvar, nhorizon, maxdraws);
  
     ad = 0; % accepted draws
@@ -66,8 +66,8 @@ function [IRF_in, collector] = task1(VAR_config)
         Q = OrthNorm(nvar);
      
         % Check restrictions
-        checker = logical(zeros(nshocks, 1));
-        minuschecker = logical(zeros(nshocks, 1));
+        checker = false(nshocks, 1);
+        minuschecker = false(nshocks, 1);
         for ii = 1:nshocks
             checker(ii) = all(Wcell{ii} * Q(:, ii) <= 0); % returns 1 if all SR satisfied for shock ii
             minuschecker(ii) = all(Wcell{ii} * Q(:, ii) >= 0);
@@ -81,26 +81,29 @@ function [IRF_in, collector] = task1(VAR_config)
      
         % If restrictions are satisfied, compute IRFs for the desired periods (nstep)
         if include == 1 || include == - 1
-            ad = ad + 1;
+            ad = ad + 1; %increment accepted draws
             if include == 1
                 IRF_in(:, :, :, ad) = irftimesorth(IRF_coef, Q);
             elseif include == - 1
                 IRF_in(:, :, :, ad) = - irftimesorth(IRF_coef, Q);
             end
          
+            % display accepted draws if 100
             if ad == 100 * ww
                 disp(['Loop: ' num2str(ad) ' / ' num2str(td) ' draws']);
                 ww = ww + 1;
             end
         else
-            rd = rd + 1;
+            rd = rd + 1; %increment rejected draws
         end
      
         % Collector of indices
         for ff = 1:size(drawMatrix, 1)
+            % if looking for total draws
             if drawMatrix(ff, 2) == 0 && td == drawMatrix(ff, 1)
                 flagIndiv(ff) = true;
                 collector(ff, :) = [ad, rd, td];
+            % if looking for accepted draws
             elseif drawMatrix(ff, 2) == 1 && ad == drawMatrix(ff, 1)
                 flagIndiv(ff) = true;
                 collector(ff, :) = [ad, rd, td];

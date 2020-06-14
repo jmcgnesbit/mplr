@@ -1,4 +1,4 @@
-function [IRF_C, LR_C] = IRF_coeff(A, cholsig, nlag, nhorizon, constant)
+function [IRF_C, LR_C, C] = IRF_coeff(A, cholsig, nlag, nhorizon, constant)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % irf_coeff Generate IRF's that haven't been multiplied by rotation
     % matrices. This is precomputed to save time

@@ -17,14 +17,17 @@ function isodraw_plot(dim, Mchoices, pic_config, filename, include_title)
     fig_height = pic_config.height;
     pic_dir = pic_config.directory;
  
+    % Colors for each line
     colormat = {'red', 'blue', 'green', 'cyan', 'black'};
  
     % Figure 2
     figure('Name', 'Isodraw all')
- 
+    
+    
     string = strings(1, size(Mchoices, 1));
  
     for j = 1:size(Mchoices, 1)
+        % Plots iso-draw function, which is bound rearranged for eps
         fplot(@(x)isodraw_calc(dim, x, Mchoices(j)), 'LineWidth', 2, 'Color', colormat{j})
         string(j) = ['M = ' num2str(Mchoices(j))];
         hold on;

@@ -1,4 +1,4 @@
-function epsilon = isodraw_calc(dim, delta, M)
+function epsilon = isodraw_calc(d, delta, M)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % isodraw_calc Function to compute iso-draw curves. Upper bound in
@@ -13,5 +13,7 @@ function epsilon = isodraw_calc(dim, delta, M)
     % epsilon
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    epsilon = ((2*dim)/M) * log((2*dim)/delta);
+    old_epsilon = ((2*d) / M) * log((2*d)/delta);
+    new_epsilon = (exp(1)/M) * (2*d + log(1/delta));
+    epsilon = min(old_epsilon, new_epsilon);
 end
