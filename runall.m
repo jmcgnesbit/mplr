@@ -191,8 +191,8 @@ display(equalepsdelta);
 
 
 %% Individual isocurve (text) - Figure 11
- 
+
 isodraw_plot(1, 120, iso_config, 'isodraw_text');
 equalepsdelta = fzero(@(delta) epsdelta(1, delta, 120),0.1);
-equalepsdelta
+equalepsdelta % presented in appendix C
 1 - equalepsdelta
